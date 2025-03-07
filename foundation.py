@@ -14,6 +14,66 @@ def current_date():
     '''
     return time.strftime('%Y-%m-%d')
 
+def hour():
+    '''
+    Returns the current hour
+    '''
+    return int(time.strftime('%H'))
+
+def minute():
+    '''
+    Returns the current minute
+    '''
+    return int(time.strftime('%M'))
+
+def second():
+    '''
+    Returns the current second
+    '''
+    return int(time.strftime('%S'))
+
+def year():
+    '''
+    Returns the current year
+    '''
+    return int(time.strftime('%Y'))
+
+def month():
+    '''
+    Returns the current month
+    '''
+    return int(time.strftime('%m'))
+
+def day():
+    '''
+    Returns the current day
+    '''
+    return int(time.strftime('%d'))
+
+def weekday():
+    '''
+    Returns the current weekday (0 = Monday, 6 = Sunday)
+    '''
+    return int(time.strftime('%w'))
+
+def weekday_text():
+    '''
+    Returns the current weekday as text
+    '''
+    return time.strftime('%A')
+
+def month_text():
+    '''
+    Returns the current month as text
+    '''
+    return time.strftime('%B')
+
+def millisecond():
+    '''
+    Returns the current milisecond
+    '''
+    return int((time.time() * 1000) % 1000)
+
 class LLM:
     '''
     Lightweight Language Model with basic text manipulation and generation
@@ -38,7 +98,7 @@ class LLM:
     def PreviousWord(self, text, word):
         """Returns the word before the given word, or None if not found or first."""
         words = self._split_text(text)
-        for i in range(1, len(words)): 
+        for i in range(1, len(words)):
             if words[i] == word:
                 return words[i - 1]
         return None
@@ -75,7 +135,7 @@ class LLM:
             if current in transitions and transitions[current]:
                 current = random.choice(transitions[current])
             else:
-                current = random.choice(words) 
+                current = random.choice(words)
             result.append(current)
         return " ".join(result)
 
@@ -166,21 +226,57 @@ class ImageGenerator:
             output.append(row)
         return "\n".join(output)
 
+class Secret:
+    '''
+    Real randomness number generator
+    '''
+    def __init__(self):
+        pass
+
+    def real_random_number(self, a, b):
+     '''Returns a real random number between a and b'''
+     if a > b:
+        a, b = b, a
+
+     current_time = time.time()
+     milliseconds = int(current_time * 1000) % 1000
+     seconds = int(current_time) % 60
+     minutes = (int(current_time) // 60) % 60
+
+     random_change = (milliseconds + seconds + minutes) % (b - a)
+
+     secret = random.uniform(a, b) + (random_change / 1000.0)
+
+     return secret
+    
+    def roll(self, sides):
+        """Rolls a die with the given number of sides."""
+        result = self.real_random_number(1, sides)
+        return round(result)
+
+
+
 if __name__ == '__main__':
     print("Current Time:", current_time())
     print("Current Date:", current_date())
-    
+   
     ai = LLM()
     text = "Hello my name is LLM and I like to code"
     print("Next word after 'name':", ai.NextWord(text, "name"))
     print("Previous word before 'name':", ai.PreviousWord(text, "name"))
     print("Random word:", ai.RandomWord(text))
     print("Generated text:", ai.GenerateText(text, 5, "Hello"))
-    
+   
     print("Pi:", pi())
     print("Dice roll (6 sides):", Dice().roll(6))
     print("E:", e())
-    
+   
     generator = ImageGenerator()
     print("\nCloudy ASCII Art:")
     print(generator.generate_ascii(prompt="cloudy"))
+    print(weekday_text())
+    print(month_text())
+
+    secret = Secret()
+    print("Real Random Number:", secret.real_random_number(0, 1000))
+    print(secret.roll(6))
