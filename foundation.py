@@ -390,6 +390,38 @@ def midpoint(x1, y1, x2, y2):
     '''Returns the midpoint between two coordinates'''
     return ((x1 + x2) / 2, (y1 + y2) / 2)
 
+class Printer:
+    class Colors:
+        RED = '\033[31m'
+        GREEN = '\033[32m'
+        YELLOW = '\033[33m'
+        BLUE = '\033[34m'
+        PURPLE = '\033[35m'
+        CYAN = '\033[36m'
+        WHITE = '\033[37m'
+        RESET = '\033[0m'
+        YELLOW_GREEN = '\033[38;5;118m'
+
+    def log(self, text, color="lime"):
+        if color.lower() == "red":
+            print(f"{self.Colors.RED}{text}{self.Colors.RESET}")
+        elif color.lower() == "green":
+            print(f"{self.Colors.GREEN}{text}{self.Colors.RESET}")
+        elif color.lower() == "yellow":
+            print(f"{self.Colors.YELLOW}{text}{self.Colors.RESET}")
+        elif color.lower() == "blue":
+            print(f"{self.Colors.BLUE}{text}{self.Colors.RESET}")
+        elif color.lower() == "purple":
+            print(f"{self.Colors.PURPLE}{text}{self.Colors.RESET}")
+        elif color.lower() == "cyan":
+            print(f"{self.Colors.CYAN}{text}{self.Colors.RESET}")
+        elif color.lower() == "white":
+            print(f"{self.Colors.WHITE}{text}{self.Colors.RESET}")
+        elif color.lower() == "lime":
+            print(f"{self.Colors.YELLOW_GREEN}{text}{self.Colors.RESET}")
+        else:
+            print(text) 
+
 if __name__ == '__main__':
     print("Current Time:", current_time())
     print("Current Date:", current_date())
@@ -446,3 +478,7 @@ if __name__ == '__main__':
     print(random_quote())
     print("Distance:", distance(0, 0, 3, 4))
     print("Midpoint:", midpoint(0, 0, 3, 4))
+    printer = Printer()
+    printer.log("Hello, World!", "green")
+    printer.log("Hello, World!", "red")
+    printer.log("Hello, World!", "blue")
