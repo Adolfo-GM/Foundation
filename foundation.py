@@ -2,6 +2,9 @@ import math
 import random
 import time
 import string
+import tkinter
+import turtle
+from tkinter import messagebox
 
 def current_time():
     '''
@@ -161,7 +164,7 @@ class Dice:
             raise ValueError("Sides must be a positive integer")
         return random.randint(1, sides)
 
-class ImageGenerator:
+class ASCIIImageGenerator:
     '''
     Simple ASCII art generator using Perlin noise concepts
     '''
@@ -281,6 +284,23 @@ class Terminal():
         ''' Renders ASCII art to the terminal '''
         print(ascii)
 
+    def log(self, text):
+        ''' Logs text to the console '''
+        print(text)
+
+class Console():
+    ''' The Console/Terminal class '''
+    def __init__(self):
+        pass
+
+    def log(self, text):
+        ''' Logs text to the console '''
+        print(text)
+
+    def clear(self):
+        ''' Clears the console '''
+        print("\033[H\033[J")
+
 def random_quote():
     quotes = [
         "The only way to do great work is to love what you do. - Steve Jobs",
@@ -378,132 +398,26 @@ def random_quote():
     ]
     return random.choice(quotes)
 
-class TicTacToe:
-    '''This class implements a console-based Tic-Tac-Toe game with an AI that plays optimally using the minimax algorithm.'''
-
-    def __init__(self, player='X'):
-        '''Initializes the game with an empty board and sets the player character.'''
-        self.board = [' ' for _ in range(9)]
-        self.human_player = player
-        self.ai_player = 'O' if player == 'X' else 'X'
-        self.current_player = 'X'
-
-    def print_board(self):
-        '''Displays the current state of the board in a human-readable format.'''
-        print(f"\n{self.board[0]} | {self.board[1]} | {self.board[2]}")
-        print("--+---+--")
-        print(f"{self.board[3]} | {self.board[4]} | {self.board[5]}")
-        print("--+---+--")
-        print(f"{self.board[6]} | {self.board[7]} | {self.board[8]}\n")
-
-    def is_winner(self, board, player):
-        '''Checks if a given player has won on the provided board.'''
-        win_conditions = [(0, 1, 2), (3, 4, 5), (6, 7, 8), 
-                          (0, 3, 6), (1, 4, 7), (2, 5, 8),
-                          (0, 4, 8), (2, 4, 6)]
-        return any(board[a] == board[b] == board[c] == player for a, b, c in win_conditions)
-
-    def is_full(self, board):
-        '''Checks if the board is full.'''
-        return ' ' not in board
-
-    def minimax(self, board, depth, is_maximizing):
-        '''The minimax algorithm for AI decision-making, evaluating hypothetical boards.'''
-        if self.is_winner(board, self.ai_player):
-            return 10 - depth
-        if self.is_winner(board, self.human_player):
-            return -10 + depth
-        if self.is_full(board):
-            return 0
-
-        if is_maximizing:
-            best_score = float('-inf')
-            for i in range(9):
-                if board[i] == ' ':
-                    board[i] = self.ai_player
-                    score = self.minimax(board, depth + 1, False)
-                    board[i] = ' '
-                    best_score = max(best_score, score)
-            return best_score
-        else:
-            best_score = float('inf')
-            for i in range(9):
-                if board[i] == ' ':
-                    board[i] = self.human_player
-                    score = self.minimax(board, depth + 1, True)
-                    board[i] = ' '
-                    best_score = min(best_score, score)
-            return best_score
-
-    def best_move(self):
-        '''Calculates the best move for the AI using the minimax algorithm.'''
-        best_score = float('-inf')
-        move = -1
-        for i in range(9):
-            if self.board[i] == ' ':
-                self.board[i] = self.ai_player
-                score = self.minimax(self.board, 0, False)
-                self.board[i] = ' '
-                if score > best_score:
-                    best_score = score
-                    move = i
-        return move
-
-    def get_best_move(self, board, ai_player='O', human_player='X'):
-        '''Method to return the best move for the AI given a board state.'''
-        self.ai_player = ai_player
-        self.human_player = human_player
-        temp_board = board.copy()
-        best_score = float('-inf')
-        move = -1
-        for i in range(9):
-            if temp_board[i] == ' ':
-                temp_board[i] = ai_player
-                score = self.minimax(temp_board, 0, False)
-                temp_board[i] = ' '
-                if score > best_score:
-                    best_score = score
-                    move = i
-        return move
-
-    def play_move(self, position):
-        '''Marks the board with the current player's move.'''
-        if 0 <= position < 9 and self.board[position] == ' ':
-            self.board[position] = self.current_player
-            return True
-        return False
-
-    def switch_player(self):
-        '''Switches the current player.'''
-        self.current_player = self.ai_player if self.current_player == self.human_player else self.human_player
-
-    def play_game(self):
-        '''Handles the game loop where the player and AI take turns.'''
-        self.print_board()
-        while not self.is_full(self.board):
-            if self.current_player == self.ai_player:
-                print("AI's turn...")
-                move = self.best_move()
-                self.play_move(move)
-            else:
-                try:
-                    move = int(input(f"Your turn ({self.human_player}). Enter a position (0-8): "))
-                    if not self.play_move(move):
-                        print("Invalid move. Try again.")
-                        continue
-                except (ValueError, IndexError):
-                    print("Enter a number between 0 and 8. Try again.")
-                    continue
-
-            self.print_board()
-            if self.is_winner(self.board, self.ai_player):
-                print("AI wins!")
-                return
-            if self.is_winner(self.board, self.human_player):
-                print("You win!")
-                return
-            self.switch_player()
-        print("It's a draw!")
+def log(text, color="lime"):
+    '''Logs text to the console with color'''
+    if color.lower() == "red":
+        print(f"\033[31m{text}\033[0m")
+    elif color.lower() == "green":
+        print(f"\033[32m{text}\033[0m")
+    elif color.lower() == "yellow":
+        print(f"\033[33m{text}\033[0m")
+    elif color.lower() == "blue":
+        print(f"\033[34m{text}\033[0m")
+    elif color.lower() == "purple":
+        print(f"\033[35m{text}\033[0m")
+    elif color.lower() == "cyan":
+        print(f"\033[36m{text}\033[0m")
+    elif color.lower() == "white":
+        print(f"\033[37m{text}\033[0m")
+    elif color.lower() == "lime":
+        print(f"\033[38;5;118m{text}\033[0m")
+    else:
+        print(text)
 
 def generate_password(length=8):
     characters = string.ascii_letters + string.digits + string.punctuation  
@@ -529,25 +443,108 @@ class Printer:
         RESET = '\033[0m'
         YELLOW_GREEN = '\033[38;5;118m'
 
-    def log(self, text, color="lime"):
-        if color.lower() == "red":
-            print(f"{self.Colors.RED}{text}{self.Colors.RESET}")
-        elif color.lower() == "green":
-            print(f"{self.Colors.GREEN}{text}{self.Colors.RESET}")
-        elif color.lower() == "yellow":
-            print(f"{self.Colors.YELLOW}{text}{self.Colors.RESET}")
-        elif color.lower() == "blue":
-            print(f"{self.Colors.BLUE}{text}{self.Colors.RESET}")
-        elif color.lower() == "purple":
-            print(f"{self.Colors.PURPLE}{text}{self.Colors.RESET}")
-        elif color.lower() == "cyan":
-            print(f"{self.Colors.CYAN}{text}{self.Colors.RESET}")
-        elif color.lower() == "white":
-            print(f"{self.Colors.WHITE}{text}{self.Colors.RESET}")
-        elif color.lower() == "lime":
-            print(f"{self.Colors.YELLOW_GREEN}{text}{self.Colors.RESET}")
-        else:
-            print(text) 
+    def log(self, text, color="lime", bold=False):
+        color_map = {
+            "red": self.Colors.RED,
+            "green": self.Colors.GREEN,
+            "yellow": self.Colors.YELLOW,
+            "blue": self.Colors.BLUE,
+            "purple": self.Colors.PURPLE,
+            "cyan": self.Colors.CYAN,
+            "white": self.Colors.WHITE,
+            "lime": self.Colors.YELLOW_GREEN,
+        }
+
+        color_code = color_map.get(color.lower(), "")
+        bold_code = "\033[1m" if bold else ""
+        
+        print(f"{bold_code}{color_code}{text}{self.Colors.RESET}")
+
+class View:
+    def __init__(self, title, width, height):
+        self.title = title
+        self.width = width
+        self.height = height
+        self.window = tkinter.Tk()
+        self.window.title(title)
+        self.window.geometry(f"{width}x{height}")
+        self.window.resizable(False, False)
+        
+    def mainloop(self):
+        self.window.mainloop()
+
+    def button(self, text, command):
+        button = tkinter.Button(self.window, text=text, command=command)
+        button.config(font=("Arial", 12), padx=20, pady=10)
+        button.pack_propagate(False)
+        button.config(borderwidth=0, relief="flat")
+        button.config(width=20, height=2)
+        button.pack()
+    
+    def text(self, text):
+        label = tkinter.Label(self.window, text=text, font=("Arial", 12))
+        label.pack()
+    
+    def spacer(self):
+        label = tkinter.Label(self.window, text="")
+        label.pack()
+
+    def paragraph(self, text):
+        label = tkinter.Label(self.window, text=text, font=("Arial", 10), wraplength=self.width, justify="left")
+        label.pack()
+
+    def heading(self, text):
+        label = tkinter.Label(self.window, text=text, font=("Arial", 15))
+        label.pack()
+
+    def input(self, placeholder):
+        entry = tkinter.Entry(self.window, font=("Arial", 12), width=30)
+        entry.insert(0, placeholder)
+        entry.pack()
+        return entry
+
+def msgbox(title, message):
+    '''Displays a message box with the given title and message'''
+    root = tkinter.Tk()
+    root.withdraw()
+    tkinter.messagebox.showinfo(title, message)
+
+def popup(title, message):
+    '''Displays a popup message with the given title and message'''
+    root = tkinter.Tk()
+    root.withdraw()
+    tkinter.messagebox.showinfo(title, message)
+
+def alert(title, message):
+    '''Displays an alert with the given title and message'''
+    root = tkinter.Tk()
+    root.withdraw()
+    tkinter.messagebox.showwarning(title, message)
+
+def confirm(title, message):
+    '''Displays a confirmation dialog with the given title and message'''
+    root = tkinter.Tk()
+    root.withdraw()
+    return tkinter.messagebox.askyesno(title, message)
+
+def prompt(title, message):
+    '''Displays a prompt dialog with the given title and message'''
+    root = tkinter.Tk()
+    root.withdraw()
+    return tkinter.simpledialog.askstring(title, message)
+
+def prompt_number(title, message):
+    '''Displays a prompt dialog for a number with the given title and message'''
+    root = tkinter.Tk()
+    root.withdraw()
+    return tkinter.simpledialog.askinteger(title, message)
+
+
+
+
+Printer().log("Welcome to AGGM Foundation!", "red", True)
+
+Printer().log("AGGM Foundation ads many functions to python!", "green", True)
 
 if __name__ == '__main__':
     print("Current Time:", current_time())
