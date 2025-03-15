@@ -561,7 +561,7 @@ if __name__ == '__main__':
     print("Dice roll (6 sides):", Dice().roll(6))
     print("E:", e())
    
-    generator = ImageGenerator()
+    generator = ASCIIImageGenerator()
     print("\nCloudy ASCII Art:")
     print(generator.generate_ascii(prompt="cloudy"))
     print(weekday_text())
@@ -607,9 +607,5 @@ if __name__ == '__main__':
     printer.log("Hello, World!", "red")
     printer.log("Hello, World!", "blue")
 
-    tic_tac_toe = TicTacToe() 
-    current_board = ['X', ' ', ' ', ' ', 'O', ' ', ' ', ' ', ' '] 
-    best_move = tic_tac_toe.get_best_move(current_board, ai_player='O', human_player='X')
-    print(f"AI's best move: {best_move}") 
 
     
